@@ -2,10 +2,13 @@ package com.example.yolortmp_ta;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AutomaticZenRule;
 import android.os.Bundle;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Toast;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -21,13 +24,17 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     CameraBridgeViewBase cameraBridgeViewBase;
     BaseLoaderCallback baseLoaderCallback;
     Mat flippedFrame;
-
+    boolean buttonState = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+
+        final Button btn_toggleStream = findViewById(R.id.btn_toggleStream);
+        btn_toggleStream.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_stream_desable));
 
         cameraBridgeViewBase = (JavaCameraView)findViewById(R.id.CameraView);
         cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
@@ -49,7 +56,24 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                 }
             }
         };
+        btn_toggleStream.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!buttonState){
+                    Toast.makeText(MainActivity.this, "Streaming started", Toast.LENGTH_LONG).show();
+                    btn_toggleStream.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_stream_enable));
+                    buttonState = true;
+                }
+                else{
+                    Toast.makeText(MainActivity.this, "Streaming ended", Toast.LENGTH_LONG).show();
+                    btn_toggleStream.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_stream_desable));
+                    buttonState = false;
+                }
+            }
+        });
+
     }
+
 
     @Override
     public void onCameraViewStarted(int width, int height) {
@@ -72,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     protected void onResume() {
         super.onResume();
         if (!OpenCVLoader.initDebug()){
-            Toast.makeText(getApplicationContext(),"There's a problem, yo!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),"Your camera stoppend and start again", Toast.LENGTH_SHORT).show();
         }
 
         else
