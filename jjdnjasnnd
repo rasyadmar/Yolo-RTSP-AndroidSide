@@ -1,0 +1,48 @@
+[33mcommit 691b2eab4160f60278e875f83b0ac684057206bd[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: rasyadmar <rasyadmar@gmail.com>
+Date:   Sun Dec 27 16:27:46 2020 +0700
+
+    adding time to streaming notif and changing menu page to menu pop up for setting RTMP url
+
+[33mcommit babece84f33868ebe9885cf2d216c8c224d13766[m[33m ([m[1;31morigin/master[m[33m)[m
+Merge: 78a39f8 2170711
+Author: rasyadmar <rasyadmar@gmail.com>
+Date:   Sun Dec 27 10:55:43 2020 +0700
+
+    Merge branch 'master' of https://github.com/rasyadmar/yoloRTMP_TA
+
+[33mcommit 78a39f8974f29e3982c5e378fe2fa84dc089f004[m
+Author: rasyadmar <rasyadmar@gmail.com>
+Date:   Sun Dec 27 10:54:53 2020 +0700
+
+    adding menu to input RTMP url but incomplete. The variable reset when menu is closed
+
+[33mcommit 2170711c5dc1da32d0e242c2df9fa56e0ac0af28[m
+Author: Muhammad Abdullah Rasyad <59950777+rasyadmar@users.noreply.github.com>
+Date:   Sat Dec 26 11:29:16 2020 +0700
+
+    Update README.md
+
+[33mcommit 7be2b36a83f3c3f7b35d9e8826e3ad99fb42ff07[m
+Author: rasyadmar <rasyadmar@gmail.com>
+Date:   Sat Dec 26 11:26:10 2020 +0700
+
+    adding toggle stream button and simple pop up message (not fuctional)
+
+[33mcommit 85f652fe52f5421ae643233bbed84dc8f9148c33[m
+Author: rasyadmar <rasyadmar@gmail.com>
+Date:   Thu Dec 24 21:11:29 2020 +0700
+
+    adding fullscreen opencv camera view
+
+[33mcommit 41a3bde99d488fbe18936be2c50a89a9f7412c84[m
+Author: rasyadmar <rasyadmar@gmail.com>
+Date:   Thu Dec 24 17:51:52 2020 +0700
+
+    adding README.md
+
+[33mcommit ba6c36862bda7de34dd334874820347b593c48cb[m[33m ([m[1;31morigin/appv2[m[33m)[m
+Author: rasyadmar <rasyadmar@gmail.com>
+Date:   Thu Dec 24 17:42:16 2020 +0700
+
+    restart the project with phone and tablet template
