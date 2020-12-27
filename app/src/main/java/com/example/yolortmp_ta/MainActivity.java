@@ -1,15 +1,18 @@
 package com.example.yolortmp_ta;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AutomaticZenRule;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -20,15 +23,20 @@ import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
-public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
+import java.time.LocalDateTime;
+import java.util.Calendar;
+
+public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2, edit_field.edit_field_listerner  {
 
     CameraBridgeViewBase cameraBridgeViewBase;
     BaseLoaderCallback baseLoaderCallback;
     boolean buttonState = false;
+    private TextView RTMPurlView;
+    private String RTMPurlVar;
 
-    public void openRTMPurlPage() {
-        Intent intent = new Intent(this, MainActivity2_rtmpUrl.class);
-        startActivity(intent);
+    public void openEditField(){
+        edit_field edit_field = new edit_field();
+        edit_field.show(getSupportFragmentManager(),"edit_field");
     }
 
     @Override
@@ -42,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         final Button btn_toggleStream = findViewById(R.id.btn_toggleStream);
         final Button btn_setting = findViewById(R.id.btn_setting);
         btn_toggleStream.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_stream_desable));
+
+        RTMPurlView = (TextView) findViewById(R.id.RTMPurl) ;
 
         cameraBridgeViewBase = (JavaCameraView)findViewById(R.id.CameraView);
         cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
@@ -64,15 +74,20 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             }
         };
         btn_toggleStream.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
+                String hour = Integer.toString(LocalDateTime.now().getHour());
+                String minute = Integer.toString(LocalDateTime.now().getMinute());
+                String second = Integer.toString(LocalDateTime.now().getSecond());
+
                 if(!buttonState){
-                    Toast.makeText(MainActivity.this, "Streaming started", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Streaming started at " + hour + ":" + minute + ":" + second, Toast.LENGTH_LONG).show();
                     btn_toggleStream.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_stream_enable));
                     buttonState = true;
                 }
                 else{
-                    Toast.makeText(MainActivity.this, "Streaming ended", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Streaming ended at " + hour + ":" + minute + ":" + second, Toast.LENGTH_LONG).show();
                     btn_toggleStream.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_stream_desable));
                     buttonState = false;
                 }
@@ -81,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         btn_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openRTMPurlPage();
+                openEditField();
             }
         });
 
@@ -133,4 +148,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     }
 
 
+    @Override
+    public void applyText(String RTMPurl) {
+        RTMPurlView.setText(RTMPurl);
+        RTMPurlVar = RTMPurl;
+    }
 }

@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 public class edit_field extends AppCompatDialogFragment {
     private EditText RTMPinputEdit;
     private edit_field_listerner listener;
+
     public interface edit_field_listerner{
         void applyText(String RTMPurl);
     }
@@ -38,7 +39,7 @@ public class edit_field extends AppCompatDialogFragment {
             public void onClick(DialogInterface dialog, int which) {
                 String RTMPurl = RTMPinputEdit.getText().toString();
                 listener.applyText(RTMPurl);
-                RTMPinputEdit.setHint(RTMPurl);
+
             }
         });
 
