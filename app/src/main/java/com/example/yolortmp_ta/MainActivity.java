@@ -3,6 +3,7 @@ package com.example.yolortmp_ta;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AutomaticZenRule;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.SurfaceView;
 import android.view.View;
@@ -23,8 +24,13 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
     CameraBridgeViewBase cameraBridgeViewBase;
     BaseLoaderCallback baseLoaderCallback;
-    Mat flippedFrame;
     boolean buttonState = false;
+
+    public void openRTMPurlPage() {
+        Intent intent = new Intent(this, MainActivity2_rtmpUrl.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         setContentView(R.layout.activity_main);
 
         final Button btn_toggleStream = findViewById(R.id.btn_toggleStream);
+        final Button btn_setting = findViewById(R.id.btn_setting);
         btn_toggleStream.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_stream_desable));
 
         cameraBridgeViewBase = (JavaCameraView)findViewById(R.id.CameraView);
@@ -69,6 +76,12 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                     btn_toggleStream.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_stream_desable));
                     buttonState = false;
                 }
+            }
+        });
+        btn_setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openRTMPurlPage();
             }
         });
 
@@ -118,4 +131,6 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     protected void onDestroy() {
         super.onDestroy();
     }
+
+
 }
