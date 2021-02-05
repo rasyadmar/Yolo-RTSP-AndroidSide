@@ -15,6 +15,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
+import com.github.hiteshsondhi88.libffmpeg.FFmpegLoadBinaryResponseHandler;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
+
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCameraView;
@@ -28,11 +34,13 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2, edit_field.edit_field_listerner  {
 
+    FFmpeg ffmpegSender;
+    FFmpeg ffmpegReceiver;
     CameraBridgeViewBase cameraBridgeViewBase;
     BaseLoaderCallback baseLoaderCallback;
     boolean buttonState = false;
     private TextView RTMPurlView;
-    private String RTMPurlVar;
+    String RTMPurlVar;
 
     public void openEditField(){
         edit_field edit_field = new edit_field();
@@ -42,7 +50,12 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        try {
+            ffmpegSenderloadbinary();
+            ffmpegReceiverloadbinary();
+        } catch (FFmpegNotSupportedException e) {
+            e.printStackTrace();
+        }
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
@@ -152,5 +165,119 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     public void applyText(String RTMPurl) {
         RTMPurlView.setText(RTMPurl);
         RTMPurlVar = RTMPurl;
+
+    }
+
+    public void ffmpegSenderloadbinary() throws FFmpegNotSupportedException {
+        if (ffmpegSender == null){
+            ffmpegSender = FFmpeg.getInstance(this);
+            ffmpegSender.loadBinary(new FFmpegLoadBinaryResponseHandler() {
+                @Override
+                public void onFailure() {
+                    Toast.makeText(getApplicationContext(),"sender failed to load library",Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onSuccess() {
+                    Toast.makeText(getApplicationContext(),"sender successfully load library",Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onStart() {
+
+                }
+
+                @Override
+                public void onFinish() {
+
+                }
+            });
+        }
+    }
+
+    public void ffmpegReceiverloadbinary() throws FFmpegNotSupportedException {
+        if (ffmpegReceiver == null){
+            ffmpegReceiver = FFmpeg.getInstance(this);
+            ffmpegReceiver.loadBinary(new FFmpegLoadBinaryResponseHandler() {
+                @Override
+                public void onFailure() {
+                    Toast.makeText(getApplicationContext(),"receiver failed to load library",Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onSuccess() {
+                    Toast.makeText(getApplicationContext(),"receiver successfully load library",Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onStart() {
+
+                }
+
+                @Override
+                public void onFinish() {
+
+                }
+            });
+        }
+    }
+
+    public void ffmpegSenderExec(String[] cmd) throws FFmpegCommandAlreadyRunningException {
+        ffmpegSender.execute(cmd, new ExecuteBinaryResponseHandler() {
+
+            @Override
+            public void onStart() {
+                super.onStart();
+            }
+
+            @Override
+            public void onProgress(String message) {
+                super.onProgress(message);
+            }
+
+            @Override
+            public void onFailure(String message) {
+                super.onFailure(message);
+            }
+
+            @Override
+            public void onSuccess(String message) {
+                super.onSuccess(message);
+            }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+            }
+        });
+    }
+    public void ffmpegReceiverExec(String[] cmd) throws FFmpegCommandAlreadyRunningException {
+        ffmpegReceiver.execute(cmd, new ExecuteBinaryResponseHandler() {
+
+            @Override
+            public void onStart() {
+                super.onStart();
+            }
+
+            @Override
+            public void onProgress(String message) {
+                super.onProgress(message);
+            }
+
+            @Override
+            public void onFailure(String message) {
+                super.onFailure(message);
+            }
+
+            @Override
+            public void onSuccess(String message) {
+                super.onSuccess(message);
+            }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+            }
+        });
     }
 }
