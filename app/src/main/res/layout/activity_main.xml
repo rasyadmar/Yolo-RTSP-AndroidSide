@@ -7,26 +7,35 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <!--    this button backgound is setted in MainActivity.java-->
+
     <org.opencv.android.JavaCameraView
-        android:id="@+id/CameraView"
+        android:id="@+id/as"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="-92dp" />
+        tools:layout_editor_absoluteX="match_parent"
+        tools:layout_editor_absoluteY="match_parent" />
 
-<!--    this button backgound is setted in MainActivity.java-->
+    <org.opencv.android.JavaCameraView
+        android:id="@+id/CameraView"
+        android:layout_width="135dp"
+        android:layout_height="121dp"
+        android:visibility="visible"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="5dp" />
+
     <Button
         android:id="@+id/btn_toggleStream"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/btn_stream_desable"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/CameraView"
-        app:layout_constraintHorizontal_bias="0.955"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.969"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.498" />
+        app:layout_constraintVertical_bias="0.553" />
 
     <Button
         android:id="@+id/btn_setting"
@@ -35,10 +44,10 @@
         android:background="@drawable/btn_setting"
         app:layout_constraintBottom_toTopOf="@+id/btn_toggleStream"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.941"
+        app:layout_constraintHorizontal_bias="0.949"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.709" />
+        app:layout_constraintVertical_bias="0.693" />
 
     <TextView
         android:id="@+id/RTMPurl"

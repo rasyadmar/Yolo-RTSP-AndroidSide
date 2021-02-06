@@ -25,9 +25,10 @@ import org.opencv.core.Mat;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
+import org.bytedeco.javacv.FFmpegFrameRecorder;
 
 public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2, edit_field.edit_field_listerner  {
-
+    FFmpegFrameRecorder recorder;
     CameraBridgeViewBase cameraBridgeViewBase;
     BaseLoaderCallback baseLoaderCallback;
     boolean buttonState = false;
@@ -152,5 +153,6 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     public void applyText(String RTMPurl) {
         RTMPurlView.setText(RTMPurl);
         RTMPurlVar = RTMPurl;
+        recorder = new FFmpegFrameRecorder(RTMPurl,640,480);
     }
 }
