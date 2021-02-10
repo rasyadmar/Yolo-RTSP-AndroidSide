@@ -37,6 +37,5 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    compile 'org.bytedeco:javacv:+'
-    compile group: 'org.bytedeco.javacpp-presets', name: 'ffmpeg', version: '4.0.2-1.4.3', classifier: 'android-arm'
+    implementation 'com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtplibrary:1.9.7'
 }

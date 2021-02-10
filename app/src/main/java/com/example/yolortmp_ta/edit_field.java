@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 public class edit_field extends AppCompatDialogFragment {
-    private EditText RTMPinputEdit;
+    private EditText RTSPinputEdit;
     private edit_field_listerner listener;
 
     public interface edit_field_listerner{
@@ -37,13 +37,13 @@ public class edit_field extends AppCompatDialogFragment {
         }).setPositiveButton("ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String RTMPurl = RTMPinputEdit.getText().toString();
+                String RTMPurl = RTSPinputEdit.getText().toString();
                 listener.applyText(RTMPurl);
 
             }
         });
 
-        RTMPinputEdit = view.findViewById(R.id.RTMPinputEdit);
+        RTSPinputEdit = view.findViewById(R.id.RTSPinputEdit);
 
         return builder.create();
     }

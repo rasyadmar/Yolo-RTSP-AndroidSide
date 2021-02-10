@@ -14,16 +14,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
-        tools:layout_editor_absoluteX="match_parent"
-        tools:layout_editor_absoluteY="match_parent" />
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="36dp" />
 
-    <org.opencv.android.JavaCameraView
-        android:id="@+id/CameraView"
+    <SurfaceView
+        android:id="@+id/surfaceView"
         android:layout_width="135dp"
         android:layout_height="121dp"
         android:visibility="visible"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="5dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.057"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/as"
+        app:layout_constraintVertical_bias="0.026" />
 
     <Button
         android:id="@+id/btn_toggleStream"

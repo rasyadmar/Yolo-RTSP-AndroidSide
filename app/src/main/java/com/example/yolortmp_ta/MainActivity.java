@@ -15,6 +15,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pedro.rtplibrary.rtsp.RtspCamera1;
+import com.pedro.rtsp.utils.ConnectCheckerRtsp;
+
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCameraView;
@@ -25,15 +28,17 @@ import org.opencv.core.Mat;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
-import org.bytedeco.javacv.FFmpegFrameRecorder;
 
-public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2, edit_field.edit_field_listerner  {
-    FFmpegFrameRecorder recorder;
+public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2, edit_field.edit_field_listerner, ConnectCheckerRtsp {
+
+    private Button btn_toggleStream;
+    private Button btn_setting;
+    private RtspCamera1 rtspCamera1;
     CameraBridgeViewBase cameraBridgeViewBase;
     BaseLoaderCallback baseLoaderCallback;
-    boolean buttonState = false;
-    private TextView RTMPurlView;
-    private String RTMPurlVar;
+    private TextView RTSPurlView;
+    private String RTSPurlVar;
+    private String url;
 
     public void openEditField(){
         edit_field edit_field = new edit_field();
@@ -48,32 +53,38 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-        final Button btn_toggleStream = findViewById(R.id.btn_toggleStream);
-        final Button btn_setting = findViewById(R.id.btn_setting);
+        btn_toggleStream = findViewById(R.id.btn_toggleStream);
+        btn_setting = findViewById(R.id.btn_setting);
         btn_toggleStream.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_stream_desable));
 
-        RTMPurlView = (TextView) findViewById(R.id.RTMPurl) ;
+        RTSPurlView = (TextView) findViewById(R.id.RTMPurl) ;
 
-        cameraBridgeViewBase = (JavaCameraView)findViewById(R.id.CameraView);
-        cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
-        cameraBridgeViewBase.setCvCameraViewListener(this);
+        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
 
-        baseLoaderCallback = new BaseLoaderCallback(this) {
-            @Override
-            public void onManagerConnected(int status) {
-                super.onManagerConnected(status);
-
-                switch(status){
-
-                    case BaseLoaderCallback.SUCCESS:
-                        cameraBridgeViewBase.enableView();
-                        break;
-                    default:
-                        super.onManagerConnected(status);
-                        break;
-                }
-            }
-        };
+        rtspCamera1 = new RtspCamera1(surfaceView, this);
+        rtspCamera1.prepareVideo(640,360,10,1000,0);
+        rtspCamera1.prepareVideo();
+        rtspCamera1.prepareAudio();
+//        cameraBridgeViewBase = (JavaCameraView)findViewById(R.id.CameraView);
+//        cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
+//        cameraBridgeViewBase.setCvCameraViewListener(this);
+//
+//        baseLoaderCallback = new BaseLoaderCallback(this) {
+//            @Override
+//            public void onManagerConnected(int status) {
+//                super.onManagerConnected(status);
+//
+//                switch(status){
+//
+//                    case BaseLoaderCallback.SUCCESS:
+//                        cameraBridgeViewBase.enableView();
+//                        break;
+//                    default:
+//                        super.onManagerConnected(status);
+//                        break;
+//                }
+//            }
+//        };
         btn_toggleStream.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -82,15 +93,26 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                 String minute = Integer.toString(LocalDateTime.now().getMinute());
                 String second = Integer.toString(LocalDateTime.now().getSecond());
 
-                if(!buttonState){
-                    Toast.makeText(MainActivity.this, "Streaming started at " + hour + ":" + minute + ":" + second, Toast.LENGTH_LONG).show();
-                    btn_toggleStream.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_stream_enable));
-                    buttonState = true;
+                if(!rtspCamera1.isStreaming()){
+                    if(RTSPurlVar!=null){
+                        if(RTSPurlVar.contains("rtsp://")){
+                            rtspCamera1.startStream(RTSPurlVar);
+                            Toast.makeText(MainActivity.this, "Streaming started at " + hour + ":" + minute + ":" + second, Toast.LENGTH_LONG).show();
+                            btn_toggleStream.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_stream_enable));
+                        }
+                        else{
+                            Toast.makeText(MainActivity.this,"Enter your server Url",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    else{
+                        Toast.makeText(MainActivity.this,"Enter your server Url",Toast.LENGTH_LONG).show();
+                    }
                 }
                 else{
+                    rtspCamera1.stopStream();
                     Toast.makeText(MainActivity.this, "Streaming ended at " + hour + ":" + minute + ":" + second, Toast.LENGTH_LONG).show();
                     btn_toggleStream.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_stream_desable));
-                    buttonState = false;
+
                 }
             }
         });
@@ -124,23 +146,12 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     @Override
     protected void onResume() {
         super.onResume();
-        if (!OpenCVLoader.initDebug()){
-            Toast.makeText(getApplicationContext(),"Your camera stoppend and start again", Toast.LENGTH_SHORT).show();
-        }
 
-        else
-        {
-            baseLoaderCallback.onManagerConnected(baseLoaderCallback.SUCCESS);
-        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if(cameraBridgeViewBase!=null){
-
-            cameraBridgeViewBase.disableView();
-        }
     }
 
     @Override
@@ -150,9 +161,65 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
 
 
     @Override
-    public void applyText(String RTMPurl) {
-        RTMPurlView.setText(RTMPurl);
-        RTMPurlVar = RTMPurl;
-        recorder = new FFmpegFrameRecorder(RTMPurl,640,480);
+    public void applyText(String RTSPurl) {
+        RTSPurlView.setText(RTSPurl);
+        RTSPurlVar = RTSPurl;
+    }
+
+    @Override
+    public void onAuthErrorRtsp() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), "Auth error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onAuthSuccessRtsp() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), "Auth success", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onConnectionFailedRtsp(String s) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), "Connection failed. " + s, Toast.LENGTH_SHORT).show();
+                rtspCamera1.stopStream();
+                btn_toggleStream.setBackgroundDrawable(getResources().getDrawable(R.drawable.btn_stream_desable));
+            }
+        });
+    }
+
+    @Override
+    public void onConnectionSuccessRtsp() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), "Connection success", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onDisconnectRtsp() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onNewBitrateRtsp(long l) {
+
     }
 }
